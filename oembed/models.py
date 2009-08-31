@@ -1,5 +1,9 @@
 import datetime
 from django.db import models
+try:
+    import simplejson
+except ImportError:
+    from django.utils import simplejson
 
 JSON = 1
 XML = 2
@@ -21,8 +25,12 @@ class StoredOEmbed(models.Model):
     match = models.TextField()
     max_width = models.IntegerField()
     max_height = models.IntegerField()
-    html = models.TextField()
+    response_json = models.TextField()
     date_added = models.DateTimeField(default=datetime.datetime.now)
     
+    @property
+    def response(self):
+        return simplejson.loads(self.response_json)
+
     def __unicode__(self):
         return self.match
